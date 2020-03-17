@@ -1,0 +1,46 @@
+@font-face                                                  {
+    font-family: 'LOVES';
+    src: url(./fonts/LOVES.ttf) format("truetype");
+}
+
+@font-face                                                  {
+    font-family: 'SpartanMB';
+    src: url(./fonts/SpartanMB-Thin.otf) format('opentype')
+}
+
+
+html                                                        { font-size: 10px; font-family: 'LOVES'; }
+
+h1,h2,h3,h4,h5,h6                                           { margin: 0; }
+h1                                                          { font-family: 'LOVES'; font-size: 4.8rem; letter-spacing: 8%; }
+h2                                                          { font-family: 'SpartanMB'; font-size: 4.8rem; }
+h3                                                          { font-family: 'LOVES'; font-size: 3.0rem; letter-spacing: 25%; }
+h4                                                          { font-family: 'LOVES'; font-size: 2.8rem; }
+h5                                                          { font-family: 'SpartanMB'; font-size: 2.4rem; }
+h6                                                          { font-family: 'LOVES'; font-size: 2.0rem; }
+
+a                                                           { color: black; }
+a:hover                                                     { color: black; text-decoration: none; }
+
+#header                                                     { height: 80px; box-shadow: 0 0 20px black; display: flex; align-items: center; }
+
+#header .header-col                                         { display: flex; justify-content: space-between; }
+
+#header .right                                              { display: flex; align-items: center; }
+
+#header .right > *                                          { padding: 0 15px; }
+
+#home                                                       { padding-top: 70px; }
+#home .col-12                                               { display: flex; flex-direction: column; align-items: center; }
+
+#home a                                                     { position: relative; transition: all 0.2s linear; width: 500px; height: 80px; font-family: 'LOVES'; display: flex; align-items: center; justify-content: center; border: 0.5px solid black; box-shadow: 0 0 4px gray; margin-top: 30px; } 
+#home a:hover, #home a:active                               { background-color: black; color: white; }
+#home a:after                                               { content: '>'; opacity: 0.2; color: white; font-family: 'LOVES'; font-size: 3.6rem; position: absolute; right: 68px;  transition: all 0.4s ease-out; }
+#home a:hover:after                                         { right: 48px; opacity: 1; }
+
+#home .or                                                   { font-family: 'LOVES'; font-size: 2.6rem; margin-top: 30px; }
+
+#lists h2                                                   { margin-top: 100px; margin-bottom: 50px; }
+#lists .list-name                                           { margin-bottom: 30px; }
+#lists .add-new h6                                          { font-size: 1.2rem; margin-left: 50px; display: inline-block; transition: all 0.2s linear; padding: 5px; cursor: pointer; }
+#lists .add-new h6:hover                                    { background-color: black; color: white; }
