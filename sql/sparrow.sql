@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.2
+-- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3309
--- Generation Time: Mar 17, 2020 at 07:14 PM
--- Server version: 10.4.10-MariaDB
--- PHP Version: 7.3.12
+-- Host: 127.0.0.1
+-- Generation Time: Jan 01, 2021 at 09:23 PM
+-- Server version: 10.4.14-MariaDB
+-- PHP Version: 7.4.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -28,21 +27,21 @@ SET time_zone = "+00:00";
 -- Table structure for table `items`
 --
 
-DROP TABLE IF EXISTS `items`;
-CREATE TABLE IF NOT EXISTS `items` (
-  `id` int(50) NOT NULL AUTO_INCREMENT,
-  `parent` int(50) NOT NULL,
-  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `items` (
+  `id` int(50) NOT NULL,
+  `parent` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `items`
 --
 
 INSERT INTO `items` (`id`, `parent`, `content`) VALUES
-(1, 1, 'List Item 1'),
-(2, 1, 'List Item 2');
+(44, '56', 'qwerty'),
+(41, '56', 'test time'),
+(42, '57', 'TEST'),
+(43, '57', 'asdfasdf');
 
 -- --------------------------------------------------------
 
@@ -50,29 +49,21 @@ INSERT INTO `items` (`id`, `parent`, `content`) VALUES
 -- Table structure for table `lists`
 --
 
-DROP TABLE IF EXISTS `lists`;
-CREATE TABLE IF NOT EXISTS `lists` (
-  `id` int(50) NOT NULL AUTO_INCREMENT,
-  `owner` int(11) NOT NULL,
+CREATE TABLE `lists` (
+  `id` int(50) NOT NULL,
+  `owner` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `locked` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `lists`
 --
 
-INSERT INTO `lists` (`id`, `owner`, `name`) VALUES
-(1, 1, 'Example List 1'),
-(21, 1, 'new list'),
-(20, 1, 'test name'),
-(19, 1, 'test'),
-(18, 1, 'test 2'),
-(16, 1, 'list name'),
-(15, 1, 'test list'),
-(14, 1, 'test'),
-(12, 1, 'test again'),
-(13, 1, 'aets');
+INSERT INTO `lists` (`id`, `owner`, `name`, `locked`) VALUES
+(57, 'test@email.com', 'testing', 1),
+(56, 'test@email.com', 'hello', 0),
+(65, 'test@email.com', 'aasdfasdf', 1);
 
 -- --------------------------------------------------------
 
@@ -80,20 +71,58 @@ INSERT INTO `lists` (`id`, `owner`, `name`) VALUES
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(50) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
   `email` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `password` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `password`) VALUES
-(1, 'test@email.com', 'password');
+INSERT INTO `users` (`email`, `password`) VALUES
+('user@email.com', '$2y$10$zjzgsF1pBjFmbCPZPDhAXuoPjry01YmflrGTnarJhzgD84ZfAhfj6'),
+('user2@email.com', '$2y$10$sQdt49UydfXucE3zYka91e6JN7xlW2Xgm86bTFEKYK3NwpoNfZhdu'),
+('test@email.com', '$2y$10$CcGDO5ac.Ule6OTTRUDShuUGtzWoqBngicK0k5xb2Yaghh1B5UCXu'),
+('user5@email.com', '$2y$10$jYjj9e2a06UFo8y0WypS0.slJIXGZXm3KnCdC9SkuBB5/l1IGl3PK');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `items`
+--
+ALTER TABLE `items`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `lists`
+--
+ALTER TABLE `lists`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD UNIQUE KEY `email` (`email`) USING HASH;
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `items`
+--
+ALTER TABLE `items`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+
+--
+-- AUTO_INCREMENT for table `lists`
+--
+ALTER TABLE `lists`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
