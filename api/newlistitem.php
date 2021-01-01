@@ -1,5 +1,6 @@
 <?php
-$id = $_COOKIE['id'];
+session_start();
+$user = $_POST['user'];
 $content = $_POST['content'];
 $parent = $_POST['parent'];
 
@@ -10,14 +11,35 @@ $database = "sparrow";
 
 $curruser = 1;
 
+if (strcmp($user, $_SESSION['user']) !== 0) {
+    echo json_encode( array( 'error' => 'you are not the owner of this list' ));
+    exit;
+}
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);
 
-$sql = "INSERT INTO items (parent, content) VALUES ({$parent}, '{$content}')";
+$sql = "SELECT * FROM lists WHERE id = ?";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $parent);
 
-$id = $conn->insert_id;
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows < 1) {
+    echo json_encode(array( 'error' => 'list with this id does not exist' ));
+    exit;
+}
+
+$sql = "INSERT INTO items (parent, content) VALUES (?, ?)";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ss", $parent, $content);
+
+$stmt->execute();
+
+$id = $stmt->insert_id;
 $conn->close();
 
 echo json_encode(array( 'id' => $id, 'content' => $content ));

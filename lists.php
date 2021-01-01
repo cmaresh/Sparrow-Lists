@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <?php
 $servername = "127.0.0.1:3306";
 $username = "root";
@@ -6,35 +7,51 @@ $database = "sparrow";
 
 
 $curruser = 1;
-setcookie('id', 1);
+
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);
 
-$sql = "SELECT id, name FROM lists WHERE owner = 1";
+if (isset($_SESSION['user'])) {
+    $sql = "SELECT id, name FROM lists WHERE owner = ?";
 
-$result = $conn->query($sql);
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $_SESSION['user']);
 
-$lists = [];
-while($row = $result->fetch_assoc()) {
-    $lists[] = $row;
-}
+    $lists = [];
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $lists[] = $row;
+        }
+    }
+} 
 
 $conn->close();
 ?>
 <!DOCTYPE html>
 <html>
-<?php readfile('./head.php'); ?>
+<?php include './head.php'; ?>
 
 <body>
-<?php readfile('./header.php'); ?>
+<?php include './header.php'; ?>
 
+<div class="backdrop birds"></div>
 <section id="lists">
-    <div class="container"><div class="row"><div class="col-12">
+    
+    <div class="container padded"><div class="row"><div class="col-12">
+        <?php if (isset($_SESSION['user'])): ?>
         <h2>Your Lists</h2>
         <div class="list-items">
         <?php foreach($lists as $l) { echo '<div class="list-item"><h5 class="list-name"><a href="list.php?id='.$l['id'].'">'.$l['name'].'</a></h5></div>'; } ?>
         </div>
-        <div class="add-new"><h6>+</h6></div>
+        <div class="list-option add"><h6>+</h6></div>
+        <div class="list-option remove"><h6>-</h6></div>
+        <?php else: ?>
+        <div id="no-access">
+            <div>you are not logged in</div>
+            <a href="login.php">LOGIN ></a>
+        </div>
+        <?php endif; ?>
     </div></div></div>
 </section>
 
@@ -42,11 +59,11 @@ $conn->close();
 <script>
     creatingNew = false;
     $(document).ready(function() {
-        addNew = $('.add-new');
+        addNew = $('.add');
         addNew.click(function() {
             if (!creatingNew) {
                 creatingNew = true;
-                $('.add-new').html(`
+                $('.add').html(`
                     <input id="new-list-name" type='text' placeholder="Enter a list name">
                 `);
             }
@@ -56,11 +73,11 @@ $conn->close();
             var keycode = (event.keyCode ? event.keyCode : event.which);
             var listname = $('#new-list-name').val();
             if(keycode == '13' && creatingNew){
-                $.post('/sparrow/api/newlist.php', { name: listname }, function(data) {
+                $.post('/sparrow/api/newlist.php', { user: "<?php echo $_SESSION['user']; ?>", name: listname }, function(data) {
                     data = JSON.parse(data);
                     var newItemHtml = '<div class="list-item"><h5 class="list-name"><a href="list.php?id=' + data.id + '">' + data.name + '</a></h5></div>'
                     $('.list-items').append(newItemHtml);
-                    $('.add-new').html(`
+                    $('.add').html(`
                     <h6>+</h6>
                     `);
                 });
