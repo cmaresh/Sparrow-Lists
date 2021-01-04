@@ -3,20 +3,13 @@ session_start();
 $id = $_POST['user'];
 $name = $_POST['name'];
 
-$servername = "127.0.0.1:3306";
-$username = "root";
-$password = "";
-$database = "sparrow";
-
-$curruser = 1;
+include './templates/config.tpl.php';
 
 if (strcmp($id, $_SESSION['user']) !== 0) {
     echo json_encode( array( 'error' => 'you are not the owner of this list' ));
+    $conn->close();
     exit;
 }
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $database);
 
 $sql = "SELECT * FROM users WHERE email = ?";
 

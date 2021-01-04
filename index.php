@@ -1,30 +1,27 @@
 <?php session_start(); ?>
 <?php
-$servername = "127.0.0.1:3306";
-$username = "root";
-$password = "";
-$database = "sparrow";
-
-setcookie('id', 1);
-// Create connection
-$conn = new mysqli($servername, $username, $password, $database);
+include './templates/config.tpl.php';
 
 $searchtext;
+$searchtext_SQL;
 
 if (isset($_POST['searchtext'])) {
-    $searchtext = $_POST['searchtext'];
+    $searchtext = strtoupper($_POST['searchtext']);
+    $searchtext_SQL = "%".$searchtext."%";
 } else {
     $searchtext = "%";
+    $searchtext_SQL = "%";
 }
 
 $sql = "SELECT DISTINCT lists.id, lists.name 
-        FROM lists JOIN items 
-        WHERE (name LIKE ? OR content LIKE ?) 
+        FROM lists 
+        INNER JOIN items ON lists.id = items.parent
+        WHERE ( UPPER(name) LIKE ? OR UPPER(content) LIKE ?) 
         AND locked = false 
         LIMIT 20";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $searchtext, $searchtext);
+$stmt->bind_param("ss", $searchtext_SQL, $searchtext_SQL);
 
 $search_results = [];
 
@@ -39,10 +36,10 @@ $conn->close();
 ?>
 <!DOCTYPE html>
 <html>
-<?php include './head.php'; ?>
+<?php include './templates/head.tpl.php'; ?>
 
 <body>
-<?php include './header.php'; ?>
+<?php include './templates/header.tpl.php'; ?>
 
 <div class="backdrop trees"></div>
 <section id="home">

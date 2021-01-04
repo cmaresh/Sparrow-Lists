@@ -181,7 +181,55 @@ section                                                     { padding-top: 70px;
     font-size: 18px;
     font-family: 'LOVES';
 }
-#lock .unlocked-content                                     { display: block; }
+#lock .unlocked-content                                     { display: flex; align-items: center;}
 #lock .locked-content                                       { display: none; }
 #lock.locked .unlocked-content                              { display: none; }
-#lock.locked .locked-content                                { display: block; }
+#lock.locked .locked-content                                { display: flex; align-items: center;}
+
+.modal-content {
+    border-radius: 0;
+}
+.modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #EB5757;
+}
+
+.modal-header .modal-title {
+    font-family: 'LOVES';
+    font-size: 30px;
+    color: white;
+}
+
+.modal-header .close {
+    display: none;
+}
+
+.modal-body {
+    padding-top: 60px;
+    font-family: "Spartan MB";
+    font-size: 20px;
+    text-align: center;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    border-top: none !important;
+}
+
+.modal-footer button{
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: black !important;
+    text-shadow: none !important;
+    font-family: "LOVES";
+    font-size: 30px; 
+}
+
+.modal-footer button.btn-primary {
+    background-color: #EB5757 !important;
+    color: white !important;
+}

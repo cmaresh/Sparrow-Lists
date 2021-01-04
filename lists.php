@@ -1,18 +1,9 @@
 <?php session_start(); ?>
 <?php
-$servername = "127.0.0.1:3306";
-$username = "root";
-$password = "";
-$database = "sparrow";
-
-
-$curruser = 1;
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $database);
+include './templates/config.tpl.php';
 
 if (isset($_SESSION['user'])) {
-    $sql = "SELECT id, name FROM lists WHERE owner = ?";
+    $sql = "SELECT id, name FROM lists WHERE owner = ? ORDER BY id ASC";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $_SESSION['user']);
@@ -30,10 +21,10 @@ $conn->close();
 ?>
 <!DOCTYPE html>
 <html>
-<?php include './head.php'; ?>
+<?php include './templates/head.tpl.php'; ?>
 
 <body>
-<?php include './header.php'; ?>
+<?php include './templates/header.tpl.php'; ?>
 
 <div class="backdrop birds"></div>
 <section id="lists">

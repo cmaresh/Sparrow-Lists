@@ -2,26 +2,30 @@
 session_start();
 $id = $_POST['id'];
 
-$servername = "127.0.0.1:3306";
-$username = "root";
-$password = "";
-$database = "sparrow";
+include './templates/config.tpl.php';
 
-$curruser = 1;
+$sql = "SELECT owner FROM lists WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $id);
+$stmt->execute();
 
-if (strcmp($id, $_SESSION['user']) !== 0) {
-    echo json_encode( array( 'error' => 'you are not the owner of this list' ));
-    exit;
+$result = $stmt->get_result();
+if ($result) {
+    $list = $result->fetch_assoc();
+    if (strcmp($list['owner'], $_SESSION['user']) !== 0) {
+        echo json_encode( array( 'error' => 'you are not the owner of this list', 'owner' => $list['owner'], 'user' => $_SESSION['user']));
+        exit;
+    }
 }
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $database);
+$stmt->close();
 
 $sql = "UPDATE lists SET locked = !locked WHERE id = ?";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $id);
 $stmt->execute();
+
+$stmt->close();
 
 $conn->close();
 

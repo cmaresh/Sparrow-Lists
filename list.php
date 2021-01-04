@@ -1,15 +1,6 @@
 <?php session_start(); ?>
 <?php
-$servername = "127.0.0.1:3306";
-$username = "root";
-$password = "";
-$database = "sparrow";
-
-
-$curruser = 1;
-setcookie('id', 1);
-// Create connection
-$conn = new mysqli($servername, $username, $password, $database);
+include './templates/config.tpl.php';
 
 $listId = $_GET['id'];
 
@@ -27,37 +18,63 @@ if ($stmt->execute()) {
     }
 }
 
-$access = true;
-$exists = false;
+$exists     = false;
+$owner      = false;
+$access     = false;
 
 if (count($list) > 0) {
     $exists = true;
-    if ($list[0]['locked'] && (
-        !isset($_SESSION['user']) ||
-            ( isset($_SESSION['user']) && $list[0]['owner'] !== $_SESSION['user']) )
-        ) 
-    {
-        $access = false;
-    }
+}
+
+if ($exists && isset($_SESSION['user']) && ($list[0]['owner'] === $_SESSION['user'])) {
+    $owner = true;
+}
+
+if ($exists && ( $owner || !$list[0]['locked'] )) {
+    $access = true;
 }
 
 //Retrieve list items
 if ($access) {
-    $sql = "SELECT id, content FROM items WHERE parent = ".$listId;
-    $result = $conn->query($sql);
+    $sql = "SELECT id, content FROM items WHERE parent = ? ORDER BY id ASC";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $listId);
     $lists = [];
-    while($row = $result->fetch_assoc()) {
-        $lists[] = $row;
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $lists[] = $row;
+        }
     }
 }
 $conn->close();
 ?>
 <!DOCTYPE html>
 <html>
-<?php include './head.php'; ?>
+<?php include './templates/head.tpl.php'; ?>
 
 <body>
-<?php include './header.php'; ?>
+<?php include './templates/header.tpl.php'; ?>
+
+<div class="modal" id="deletemodal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">deleting list</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>this action cannot be undone.<br><br>proceed?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="delete-final">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="backdrop birds"></div>
 <section id="lists">
@@ -68,35 +85,40 @@ $conn->close();
             <a href="/sparrow/">HOME ></a>
         </div>
         <?php endif; ?>
-        <?php if ($exists && $access): ?>
-        <h2><?php echo $list[0]['name']; ?></h2>
-        <div class="list-settings">
-            <h3 id="lock" class="<?php echo $list[0]['locked'] ? 'unlocked' : 'locked'; ?>">
-            <div class="unlocked-content"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-lock-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/><path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/></svg>&nbsp;
-            Locked</div>
-            <div class="locked-content">
-            Unlocked</div>
-            </h3>
-            <h3 class="delete">Delete?</h3>
-        </div>
-        <div class="list-items">
-        <?php foreach($lists as $l) { echo '<h5 class="list-name" data-id="'.$l['id'].'">'.$l['content'].'</h5>'; } ?>
-        </div>
-        <div class="list-options">
-            <div class="list-option add"><h6>+</h6></div>
-            <div class="list-option remove"><h6>-</h6></div>
-        </div>
-        <?php endif; ?>
         <?php if ($exists && !$access): ?>
             <div id="no-access">
                 <div>this list has not yet been unlocked by the owner</div>
                 <a href="/">back to home</a>
             </div>
         <?php endif; ?>
+        <?php if ($exists && $access): ?>
+        <h2><?php echo $list[0]['name']; ?></h2>
+        <?php if ($owner): ?>
+        <div class="list-settings">
+            <h3 id="lock" class="<?php echo $list[0]['locked'] ? 'unlocked' : 'locked'; ?>">
+            <div class="unlocked-content"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-lock-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/><path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/></svg>&nbsp;
+            Locked</div>
+            <div class="locked-content"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16"><path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z"/></svg>
+            Unlocked</div>
+            </h3>
+            <h3 class="delete" data-toggle="modal" data-target="#deletemodal">Delete?</h3>
+        </div>
+        <?php endif; ?>
+        <div class="list-items">
+        <?php foreach($lists as $l) { echo '<h5 class="list-name" data-id="'.$l['id'].'">'.$l['content'].'</h5>'; } ?>
+        </div>
+        <?php if ($owner): ?>
+        <div class="list-options">
+            <div class="list-option add"><h6>+</h6></div>
+            <div class="list-option remove"><h6>-</h6></div>
+        </div>
+        <?php endif; ?>
+        <?php endif; ?>
     </div></div></div>
 </section>
 
 </body>
+<?php if ($owner): ?>
 <script>
     creatingNew = false;
     $(document).ready(function() {
@@ -125,7 +147,7 @@ $conn->close();
             });
         });
 
-        $('.delete').click(function() {
+        $('#delete-final').click(function() {
             $.post('/sparrow/api/deletelist.php', { user: "<?php echo $_SESSION['user']; ?>", id: <?php echo $listId; ?> }, function(data) {
                 window.location.href = '/sparrow/lists.php';
             });
@@ -162,4 +184,5 @@ $conn->close();
         })
     });
 </script>
+<?php endif; ?>
 </html>

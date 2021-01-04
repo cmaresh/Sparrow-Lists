@@ -4,12 +4,7 @@ $emailErr = "";
 $passwordErr = "";
 
 if (isset($_POST['submit'])) {
-    $servername = "127.0.0.1:3306";
-    $username = "root";
-    $password = "";
-    $database = "sparrow";
-
-    $conn = new mysqli($servername, $username, $password, $database);
+    include './templates/config.tpl.php';
 
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
@@ -58,10 +53,10 @@ if (isset($_POST['submit'])) {
 ?>
 <!DOCTYPE html>
 <html>
-<?php include './head.php'; ?>
+<?php include './templates/head.tpl.php'; ?>
 
 <body>
-<?php include './header.php'; ?>
+<?php include './templates/header.tpl.php'; ?>
 <div class="backdrop birds"></div>
 <section id="login">
     <div class="container padded"><div class="row"><div class="col-12">

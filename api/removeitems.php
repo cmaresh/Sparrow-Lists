@@ -3,15 +3,7 @@ session_start();
 $id = $_POST['listId'];
 $removeIds = $_POST['ids'];
 
-$servername = "127.0.0.1:3306";
-$username = "root";
-$password = "";
-$database = "sparrow";
-
-$curruser = 1;
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $database);
+include './templates/config.tpl.php';
 
 $sql = "SELECT * FROM lists WHERE id = ?";
 $stmt = $conn->prepare($sql);
@@ -22,11 +14,13 @@ $list_data = $result->fetch_assoc();
 
 if (strcmp($list_data['owner'], $_SESSION['user']) !== 0) {
     echo json_encode(array( 'error' => 'you are not the owner of this list'));
+    $conn->close();
     exit;
 }
 
 if ($result->num_rows < 1) {
     echo json_encode(array( 'error' => 'list with this id does not exist', 'listId' => $id ));
+    $conn->close();
     exit;
 } 
 
