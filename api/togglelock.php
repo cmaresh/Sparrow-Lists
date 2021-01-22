@@ -2,7 +2,7 @@
 session_start();
 $id = $_POST['id'];
 
-include './templates/config.tpl.php';
+include '../templates/config.tpl.php';
 
 $sql = "SELECT owner FROM lists WHERE id = ?";
 $stmt = $conn->prepare($sql);

@@ -3,7 +3,7 @@ session_start();
 $id = $_POST['listId'];
 $removeIds = $_POST['ids'];
 
-include './templates/config.tpl.php';
+include '../templates/config.tpl.php';
 
 $sql = "SELECT * FROM lists WHERE id = ?";
 $stmt = $conn->prepare($sql);

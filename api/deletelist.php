@@ -3,7 +3,7 @@ session_start();
 $user = $_POST['user'];
 $listId = $_POST['id'];
 
-include './templates/config.tpl.php';
+include '../templates/config.tpl.php';
 
 if (strcmp($user, $_SESSION['user']) !== 0) {
     echo json_encode( array( 'error' => 'you are not the owner of this list' ));

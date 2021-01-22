@@ -78,41 +78,54 @@ $conn->close();
 
 <div class="backdrop birds"></div>
 <section id="lists">
-    <div class="container padded"><div class="row"><div class="col-12">
+    <div class="container padded"><div class="row">
         <?php if (!$exists): ?>
-        <div id="no-access">
-            <div>a list with this ID does not exist</div>
-            <a href="/sparrow/">HOME ></a>
+        <div class="col-12">
+            <div id="no-access">
+                <div>a list with this ID does not exist</div>
+                <a href="/sparrow/">HOME ></a>
+            </div>
         </div>
         <?php endif; ?>
         <?php if ($exists && !$access): ?>
+        <div class="col-12">
             <div id="no-access">
                 <div>this list has not yet been unlocked by the owner</div>
                 <a href="/">back to home</a>
             </div>
+        </div>
         <?php endif; ?>
         <?php if ($exists && $access): ?>
-        <h2><?php echo $list[0]['name']; ?></h2>
-        <?php if ($owner): ?>
-        <div class="list-settings">
-            <h3 id="lock" class="<?php echo $list[0]['locked'] ? 'unlocked' : 'locked'; ?>">
-            <div class="unlocked-content"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-lock-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/><path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/></svg>&nbsp;
-            Locked</div>
-            <div class="locked-content"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16"><path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z"/></svg>
-            Unlocked</div>
-            </h3>
-            <h3 class="delete" data-toggle="modal" data-target="#deletemodal">Delete?</h3>
+        <div class="col-12">
+            <h2><?php echo $list[0]['name']; ?></h2>
+            <?php if ($owner): ?>
+            <div class="list-settings">
+                <h3 id="lock" class="<?php echo $list[0]['locked'] ? 'unlocked' : 'locked'; ?>">
+                <div class="unlocked-content"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-lock-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/><path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/></svg>&nbsp;
+                Locked</div>
+                <div class="locked-content"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16"><path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z"/></svg>
+                Unlocked</div>
+                </h3>
+                <h3 class="delete" data-toggle="modal" data-target="#deletemodal">Delete?</h3>
+            </div>
+            <?php endif; ?>
         </div>
-        <?php endif; ?>
-        <div class="list-items">
-        <?php foreach($lists as $l) { echo '<h5 class="list-name" data-id="'.$l['id'].'">'.$l['content'].'</h5>'; } ?>
+        <div class="col-md-6 sp-flex-column fixed-height">
+            <div class="list-content">
+                <div class="description">This is a description</div>
+                <ol id="list-items">
+                <?php foreach($lists as $l) { echo '<li class="list-name '.($owner ? 'editable' : '').'" data-id="'.$l['id'].'">'.$l['content'].'</li>'; } ?>
+                </ol>
+            </div>
+            <?php if ($owner): ?>
+            <div class="list-options">
+                <div class="list-option add"><h6>+</h6></div>
+                <div class="list-option remove"><h6>-</h6></div>
+            </div>
+            <?php endif; ?>
         </div>
-        <?php if ($owner): ?>
-        <div class="list-options">
-            <div class="list-option add"><h6>+</h6></div>
-            <div class="list-option remove"><h6>-</h6></div>
+        <div class="col-md-6" style="background-color: black;">
         </div>
-        <?php endif; ?>
         <?php endif; ?>
     </div></div></div>
 </section>
@@ -159,11 +172,19 @@ $conn->close();
             if(keycode == '13' && creatingNew){
                 $.post('/sparrow/api/newlistitem.php', { user: "<?php echo $_SESSION['user']?>", content: content, parent: <?php echo $listId ?> }, function(data) {
                     data = JSON.parse(data);
-                    var newItemHtml = '<h5 class="list-name" data-id="' + data.id +'">' + data.content + '</h5>'
-                    $(newItemHtml).appendTo('.list-items').click(function() {
-                        $(this).toggleClass('selected');
-                        $('.selected').length > 0 ? $('.remove').show() : $('.remove').hide();
-                    });
+                    const ol = document.querySelector("#list-items");
+                    const li = document.createElement('li');
+                    li.classList.add("list-name");
+                    li.setAttribute("data-id", data.id);
+                    const text = document.createTextNode(data.content);
+                    li.appendChild(text);
+                    ol.appendChild(li);
+
+                    // var newItemHtml = '<li class="list-name" data-id="' + data.id +'">' + data.content + '</li>'
+                    // $(newItemHtml).appendTo('.list-items').click(function() {
+                    //     $(this).toggleClass('selected');
+                    //     $('.selected').length > 0 ? $('.remove').show() : $('.remove').hide();
+                    // });
                     $('.add').html(`
                     <h6>+</h6>
                     `);

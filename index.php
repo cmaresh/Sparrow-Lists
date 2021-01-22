@@ -49,7 +49,7 @@ $conn->close();
     </form>
     <div class="search-info">
         <?php
-        if (strcmp($searchtext, "%") !== 0) {
+        if (isset($_POST['searchtext'])) {
             echo "public lists containing the term \"".$searchtext."\"";
         } else {
             echo "popular public lists";
