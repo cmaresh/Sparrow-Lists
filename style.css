@@ -18,13 +18,15 @@ h3                                                          { font-family: 'LOVE
 h4                                                          { font-family: 'LOVES'; font-size: 2.8rem; }
 h5                                                          { font-family: 'Courier New'; font-size: 2.4rem; }
 h6                                                          { font-family: 'LOVES'; font-size: 2.0rem; }
+h7                                                          { font-family: 'Courier New'; font-size: 2.0rem; text-decoration: underline; text-transform: uppercase; font-weight: bold; }
+.movie-subtext                                              { font-family: 'Courier New'; font-size: 1.5rem; font-weight: bold; }
 
 li                                                          { font-family: 'Courier New'; font-size: 2.4rem; }
 a                                                           { color: black; }
 a:hover                                                     { color: black; text-decoration: none; }
 
-.container                                                  { background-color: white; position: relative; }
-.container.padded                                           { padding: 45px; padding-bottom: 105px; margin-bottom: 50px; }
+.container                                                  { background-color: white; position: relative; padding-left: 0; padding-right: 0;}
+.container.padded                                           { padding-bottom: 105px; margin-bottom: 50px; }
 
 .fixed-height                                               { height: 60vh; }
 .sp-flex-column                                             { display: flex; flex-direction: column; }
@@ -137,22 +139,34 @@ section                                                     { padding-top: 70px;
 
 #home .or                                                   { font-family: 'LOVES'; font-size: 2.6rem; margin-top: 30px; }
 
-.list-content                                               { flex: 1; display: flex; flex-direction: column; }
-#list-items                                                 { display: flex; flex-direction: column; box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25); flex: 1; padding: 20px; }
+.list-content                                               { flex: 1; display: flex; flex-direction: column; margin-top: 50px; }
+#list-items                                                 { display: flex; flex-direction: column; flex: 1; padding-top: 20px; padding-bottom: 100px; padding-left: 0;}
 
-.description                                                { background-color: black; padding: 20px; text-align: center; font-family: "Courier New"; font-size: 20px; color: white; }
-#lists h2                                                   { margin-top: 20px; margin-bottom: 10px; letter-spacing: 0.08em; text-transform: uppercase; text-align: center;}
-#lists h3                                                   { cursor: pointer; padding: 10px; transition: all 0.1s linear; display: flex; align-items: center; font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; margin-left: 30px; margin-right: 30px; border-radius: 15px; }
+.description                                                { background-color: black; padding: 20px; text-align: center; font-family: "Courier New"; font-size: 20px; color: white; margin-top: 100px; }
+#lists h2                                                   { margin-top: 100px; letter-spacing: 0.08em; text-transform: uppercase; text-align: center;}
+#lists h3                                                   { cursor: pointer; padding: 10px; transition: all 0.1s linear; display: flex; align-items: center; font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase; margin-left: 30px; margin-right: 30px; border-radius: 15px; }
 #lists h3 svg                                               { margin-right: 5px; }
 #lists h3:hover                                             { background-color: black; color: white; }
 
+#description-content                                        { 
+    resize: none; 
+    padding: 15px;
+    width: 100%;
+    background-color: black;
+    border: none;
+    text-align: center;
+    height: auto;
+}
+
 #lists #list-items                                          { list-style: none; counter-reset: listCounter; }
-#lists #list-items .list-name::before                       { content: counter(listCounter) ". "; }
+#lists #list-items .list-name::before                       { content: counter(listCounter) ". "; padding-left: 20px;}
 #lists #list-items .list-name                               { counter-increment: listCounter; }
-#lists .list-name                                           { margin-bottom: 20px; font-size: 20px; border-radius: 10px; padding: 10px; padding-left: 0; transition: all 0.1s linear; width: fit-content; width: -moz-fit-content; }
+#lists .list-name                                           { margin-bottom: 20px; font-size: 20px; border-radius: 10px; padding: 10px 0; transition: all 0.1s linear; width: fit-content; width: -moz-fit-content; }
+#lists .list-name-content                                   { display: inline-block; }
 #lists .list-name.editable                                  { cursor: pointer; }
 #lists .list-name.editable:hover                            { padding-left: 10px; }
 #lists .list-name.selected                                  { background-color: black; color: white; padding-left: 10px; }
+#lists .list-name.selected > *                              { margin-top: 10px; }
 
 #lists .list-options                                        { display: flex; flex-direction: row; height: 40px; align-items: center; }
 
@@ -166,7 +180,7 @@ section                                                     { padding-top: 70px;
 #lists .list-option.remove h6                               { background-color: red; opacity: 0.5;}
 #lists .list-option.remove h6:hover                         { opacity: 1;}
 
-.list-settings                                              { display: flex; justify-content: center; }
+.list-settings                                              { margin-top: 10px; display: flex; justify-content: center; }
 
 #login form                                                 { display: flex; flex-direction: column; }
 #login h2                                                   { margin-bottom: 32px; margin-top: 20px; }
@@ -243,4 +257,75 @@ section                                                     { padding-top: 70px;
 .modal-footer button.btn-primary {
     background-color: #EB5757 !important;
     color: white !important;
+}
+
+
+.no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.no-gutters > .col,
+.no-gutters > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.poster-section {
+    height: 250px;
+    width: 100%;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/*
+This class removes the fading effect around element edges when using blur
+*/
+.poster-blurfix {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.poster-background {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    -webkit-filter: blur(10px);
+    -moz-filter: blur(10px);
+    -o-filter: blur(10px);
+    -ms-filter: blur(10px);
+    filter: blur(10px);
+}
+
+.poster-image {
+    max-height: 100%;
+    position: relative;
+}
+
+.movie-info {
+    padding-left: 20px; 
+}
+
+.close-item {
+    padding: 20px 0 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@media(max-width:768px) {
+    #lists .list-name {
+        font-size: 18px; 
+        width: 100%;
+        border-radius: 0; 
+        transition: 0; 
+    }
+
+    #lists .list-name.selected {
+        padding-left: 0;
+    }
 }

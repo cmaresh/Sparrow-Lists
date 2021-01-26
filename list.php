@@ -5,7 +5,7 @@ include './templates/config.tpl.php';
 $listId = $_GET['id'];
 
 //Retrieve list name
-$sql = "SELECT name, owner, locked FROM lists WHERE id = ?";
+$sql = "SELECT * FROM lists WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $listId);
 
@@ -78,7 +78,7 @@ $conn->close();
 
 <div class="backdrop birds"></div>
 <section id="lists">
-    <div class="container padded"><div class="row">
+    <div class="container padded"><div class="row no-gutters">
         <?php if (!$exists): ?>
         <div class="col-12">
             <div id="no-access">
@@ -101,20 +101,51 @@ $conn->close();
             <?php if ($owner): ?>
             <div class="list-settings">
                 <h3 id="lock" class="<?php echo $list[0]['locked'] ? 'unlocked' : 'locked'; ?>">
-                <div class="unlocked-content"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-lock-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 9a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2V9z"/><path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 1 1 7 0v3h-1V4a2.5 2.5 0 0 0-5 0v3h-1V4z"/></svg>&nbsp;
+                <div class="unlocked-content"><img src="media/unlock-fill.svg" alt="locked" />&nbsp;
                 Locked</div>
-                <div class="locked-content"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16"><path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z"/></svg>
+                <div class="locked-content"><img src="media/lock-fill.svg" alt="locked" />&nbsp;
                 Unlocked</div>
                 </h3>
                 <h3 class="delete" data-toggle="modal" data-target="#deletemodal">Delete?</h3>
             </div>
             <?php endif; ?>
         </div>
-        <div class="col-md-6 sp-flex-column fixed-height">
+        <div class="col=12">
+        
+        <div class="description">
+            <?php if($owner): ?>
+                    <div class="grow-wrap">
+                        <textarea id="description-content" placeholder="Enter a description for your list here."><?php echo $list[0]['description']; ?></textarea>
+                    </div>
+                </div>
+            <?php
+                else: 
+                    if($list[0]['description']) echo $list[0]['description'];
+                    else echo 'This is a list';
+                endif; 
+             ?>
+        </div>
+        <div class="col-md-6 sp-flex-column">
             <div class="list-content">
-                <div class="description">This is a description</div>
                 <ol id="list-items">
-                <?php foreach($lists as $l) { echo '<li class="list-name '.($owner ? 'editable' : '').'" data-id="'.$l['id'].'">'.$l['content'].'</li>'; } ?>
+                <?php foreach($lists as $l) { echo '<li class="list-name '.($owner ? 'editable' : '').'" data-id="'.$l['id'].'"><div class="list-name-content">'.$l['content'].'</div></li><br>'; } ?>
+                <!--<li class="list-name editable" data-id="100">List item content
+                    <div class="poster-section">
+                        <img class="poster-blurfix" src="./media/shapeofwater.jpg" alt="poster" />
+                        <img class="poster-background" src="./media/shapeofwater.jpg" alt="poster" />
+                        <img class="poster-image" src="./media/shapeofwater.jpg" alt="poster" />
+                    </div>
+                    <div class="movie-info">
+                        <h7 class="movie-title">The Shape of Water</h7><br>
+                        <span class="movie-subtext">R | 2h 3m | 22 December 2017</span><br>
+                        <b>Director: </b>Guillermo del Toro<br>
+                        <b>Writers: </b>Guillermo del Toro, Venessa Taylor<br>
+                        <b>Stars: </b>Sally Hawkins, Octavia Spencer, Michael Shannon<br>
+                    </div>
+                    <div class="close-item">
+                        ^
+                    </div>
+                </li>-->
                 </ol>
             </div>
             <?php if ($owner): ?>
@@ -124,7 +155,7 @@ $conn->close();
             </div>
             <?php endif; ?>
         </div>
-        <div class="col-md-6" style="background-color: black;">
+        <div class="col-md-6">
         </div>
         <?php endif; ?>
     </div></div></div>
