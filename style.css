@@ -28,6 +28,7 @@ a:hover                                                     { color: black; text
 .container                                                  { background-color: white; position: relative; padding-left: 0; padding-right: 0;}
 .container.padded                                           { padding-bottom: 105px; margin-bottom: 50px; }
 
+.center-col                                                 { display: flex; justify-content: center;}
 .fixed-height                                               { height: 60vh; }
 .sp-flex-column                                             { display: flex; flex-direction: column; }
 
@@ -139,8 +140,8 @@ section                                                     { padding-top: 70px;
 
 #home .or                                                   { font-family: 'LOVES'; font-size: 2.6rem; margin-top: 30px; }
 
-.list-content                                               { flex: 1; display: flex; flex-direction: column; margin-top: 50px; }
-#list-items                                                 { display: flex; flex-direction: column; flex: 1; padding-top: 20px; padding-bottom: 100px; padding-left: 0;}
+.list-content                                               { flex: 1; display: flex; flex-direction: column; margin-top: 70px; margin-bottom: 100px; margin-left: 30px; }
+#list-items                                                 { display: flex; flex-direction: column; flex: 1; padding-left: 0; margin-bottom: 0; }
 
 .description                                                { background-color: black; padding: 20px; text-align: center; font-family: "Courier New"; font-size: 20px; color: white; margin-top: 100px; }
 #lists h2                                                   { margin-top: 100px; letter-spacing: 0.08em; text-transform: uppercase; text-align: center;}
@@ -161,24 +162,23 @@ section                                                     { padding-top: 70px;
 #lists #list-items                                          { list-style: none; counter-reset: listCounter; }
 #lists #list-items .list-name::before                       { content: counter(listCounter) ". "; padding-left: 20px;}
 #lists #list-items .list-name                               { counter-increment: listCounter; }
-#lists .list-name                                           { margin-bottom: 20px; font-size: 20px; border-radius: 10px; padding: 10px 0; transition: all 0.1s linear; width: fit-content; width: -moz-fit-content; }
+#lists .list-name                                           { margin-bottom: 5px; font-size: 20px; border-radius: 10px; padding: 10px 0; transition: all 0.1s linear; width: fit-content; width: -moz-fit-content; }
 #lists .list-name-content                                   { display: inline-block; }
 #lists .list-name.editable                                  { cursor: pointer; }
 #lists .list-name.editable:hover                            { padding-left: 10px; }
 #lists .list-name.selected                                  { background-color: black; color: white; padding-left: 10px; }
-#lists .list-name.selected > *                              { margin-top: 10px; }
 
-#lists .list-options                                        { display: flex; flex-direction: row; height: 40px; align-items: center; }
+.list-options-pos                                           { position: sticky; top: 90vh; }
+.list-options                                               { box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); display: flex; position: absolute; left: -20px; background-color: white; padding: 12px 6px; border-radius: 20px; flex-direction: row; height: 40px; align-items: center; }
 
-#lists .list-option                                         { margin-right: 10px; margin-left: 40px; }
-#lists .list-option h6                                      { width: 30px; height: 30px; font-size: 2rem; border-radius: 15px; display: flex; align-items: center; justify-content: center; transition: all 0.2s linear; cursor: pointer; }
-#lists .list-option h6:hover                                { background-color: black; color: white; }
+.list-option                                                { display: flex; align-items: center; justify-content: center; padding: 6px; }
+.list-option[disabled]                                      { display: none; }
+.list-option svg                                            { cursor: pointer; width: 24px; height: 24px; color: black; transition: all 0.2s linear; border-radius: 12px; }
+.list-option svg:hover                                      { box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);}
 
-#lists .list-option.add h6                                  { border: 1px solid black; }
 
-#lists .list-option.remove                                  { display: none; }
-#lists .list-option.remove h6                               { background-color: red; opacity: 0.5;}
-#lists .list-option.remove h6:hover                         { opacity: 1;}
+.list-option.remove                                         { display: none; }
+.list-option.remove svg                                     { color: red; }
 
 .list-settings                                              { margin-top: 10px; display: flex; justify-content: center; }
 
@@ -272,7 +272,7 @@ section                                                     { padding-top: 70px;
 }
 
 .poster-section {
-    height: 250px;
+    height: 360px;
     width: 100%;
     padding: 20px;
     position: relative;
@@ -307,7 +307,7 @@ This class removes the fading effect around element edges when using blur
     position: relative;
 }
 
-.movie-info {
+.list-item .movie-info {
     padding-left: 20px; 
 }
 
@@ -317,7 +317,26 @@ This class removes the fading effect around element edges when using blur
     align-items: center;
     justify-content: center;
 }
+
+.desktop-movie-wrap {
+    position: sticky;
+    top: 0;
+    padding-top: 80px;
+    width: 400px;
+}
+
 @media(max-width:768px) {
+
+    .list-content {
+        margin-left: 0;
+    }
+
+    #lists .list-name.selected > *                              { margin-top: 10px; }
+
+    .poster-section {
+        height: 250px; 
+    }
+
     #lists .list-name {
         font-size: 18px; 
         width: 100%;
