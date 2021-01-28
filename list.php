@@ -153,7 +153,7 @@ $conn->close();
         <div class="col-md-6 sp-flex-column">
             <div class="list-content">
                 <ol id="list-items">
-                <?php foreach($lists as $l) { echo '<li class="list-name '.($owner ? 'editable' : '').'" data-id="'.$l['id'].'"><div class="list-name-content">'.$l['content'].'</div></li><br>'; } ?>
+                <?php foreach($lists as $l) { echo '<li class="list-name '.($owner ? 'editable' : '').'" data-id="'.$l['id'].'"><div class="list-name-content">'.$l['content'].'</div></li>'; } ?>
                 <!--<li class="list-name editable" data-id="100">List item content
                     <div class="poster-section">
                         <img class="poster-blurfix" src="./media/shapeofwater.jpg" alt="poster" />
@@ -222,7 +222,7 @@ $conn->close();
     //         selected.each(function() {
     //             removeIds.push($(this).attr('data-id'));
     //         });
-    //         $.post('/sparrow/api/removeitems.php', { listId: <?php// echo $listId; ?>, ids: removeIds }, function(data) {
+    //         $.post('/sparrow/api/removeitems.php', { listId: <?php // echo $listId; ?>, ids: removeIds }, function(data) {
     //             data = JSON.parse(data);
     //             $('.selected').remove();
     //             remove.hide();
@@ -275,9 +275,12 @@ $conn->close();
     // });
 
     let creatingItem = false;
+    let editing = false;
+    let editingElem;
 
     document.addEventListener("DOMContentLoaded", (event) => {
         const listOptions = document.getElementById("list-options");
+        const listItems = document.getElementById("list-items");
 
         const addOptElem = document.getElementById("add");
         const cancelOptElem = document.getElementById("cancel");
@@ -292,6 +295,56 @@ $conn->close();
         const newItemTextEntry = document.createElement("input");
         const newItemShadowText = document.createElement("div");
         
+        function openEditingMenu() {
+            addOptElem.setAttribute("disabled", "");
+            cancelOptElem.setAttribute("disabled", "");
+            shiftupOptElem.removeAttribute("disabled");
+            shiftdownOptElem.removeAttribute("disabled");
+            changeposOptElem.removeAttribute("disabled");
+            removeOptElem.removeAttribute("disabled");
+        }
+
+        function closeEditingMenu() {
+            addOptElem.removeAttribute("disabled");
+            shiftupOptElem.setAttribute("disabled", "");
+            shiftdownOptElem.setAttribute("disabled", "");
+            changeposOptElem.setAttribute("disabled", "");
+            removeOptElem.setAttribute("disabled", "");
+        }
+
+        listItems.addEventListener("click", e => {
+            let listItem;
+            if (e.target.classList.contains("list-name")) {
+                listItem = e.target;
+            } else if (e.target.parentNode.classList.contains("list-name")) {
+                listItem = e.target.parentNode;
+            } 
+
+            if (listItem) {
+                const selected = listItem.classList.contains("selected");
+                for (let i = 0; i < listItems.children.length; i++) {
+                    listItems.children[i].classList.remove("selected");
+                }
+
+                if (selected) {
+                    editing = false;
+                    closeEditingMenu();
+                    listItem.classList.remove("selected");
+                } else {
+                    if (creatingItem) {
+                        creatingItem = false;
+                        listItemsElem.removeChild(newItemElem);
+                    }
+                    if (!editing) {
+                        editing = true;
+                        openEditingMenu();
+                    }
+                    listItem.classList.add("selected");
+                    editingElem = listItem;
+                }
+            }
+        });
+
         newItemElem.className = "list-name";
         newItemInputContainer.className = "input-container";
         newItemTextEntry.id = "new-item-input";
@@ -304,35 +357,40 @@ $conn->close();
 
         const listItemsElem = document.getElementById("list-items");
         listOptions.addEventListener("click", (event) => {
-            const parent = event.target.parentElement;
-            if (parent.id === "add") {
+            currElem = event.target;
+            while (!currElem.classList.contains("list-option")) {
+                currElem = currElem.parentNode;
+                if (currElem.id == "list-options")  return;
+            }
+
+            if (currElem.id === "add") {
                 creatingItem = true;
-                parent.setAttribute("disabled", "");
+                currElem.setAttribute("disabled", "");
                 cancelOptElem.removeAttribute("disabled");
                 listItemsElem.appendChild(newItemElem);
                 newItemTextEntry.focus();
             }
 
-            if (parent.id === "cancel") {
+            if (currElem.id === "cancel") {
                 creatingItem = false;
-                parent.setAttribute("disabled", "");
+                currElem.setAttribute("disabled", "");
                 addOptElem.removeAttribute("disabled");
                 listItemsElem.removeChild(newItemElem);
             }
             
-            if (parent.id === "shiftup") {
-
+            if (currElem.id === "shiftup") {
+                if (editingElem.previousSibling) listItems.insertBefore(editingElem, editingElem.previousSibling);
             }
 
-            if (parent.id === "shiftdown") {
+            if (currElem.id === "shiftdown") {
+                if (editingElem.nextSibling) listItems.insertBefore(editingElem.nextSibling, editingElem);
+            }
+
+            if (currElem.id === "changepos") {
                 
             }
 
-            if (parent.id === "changepos") {
-                
-            }
-
-            if (parent.id === "remove") {
+            if (currElem.id === "remove") {
                 
             }
         });
