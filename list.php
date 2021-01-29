@@ -313,14 +313,14 @@ $conn->close();
         }
 
         listItems.addEventListener("click", e => {
-            let listItem;
-            if (e.target.classList.contains("list-name")) {
-                listItem = e.target;
-            } else if (e.target.parentNode.classList.contains("list-name")) {
-                listItem = e.target.parentNode;
-            } 
-
+            let listItem = e.target;
+            while (!listItem.classList.contains("list-name")) {
+                if (!listItem || listItem.id == "list-items") return;
+                listItem = listItem.parentNode;
+            }
+            
             if (listItem) {
+                if (!listItem.classList.contains("editable")) return;
                 const selected = listItem.classList.contains("selected");
                 for (let i = 0; i < listItems.children.length; i++) {
                     listItems.children[i].classList.remove("selected");
@@ -359,8 +359,8 @@ $conn->close();
         listOptions.addEventListener("click", (event) => {
             currElem = event.target;
             while (!currElem.classList.contains("list-option")) {
+                if (!currElem || currElem.id == "list-options") return;
                 currElem = currElem.parentNode;
-                if (currElem.id == "list-options")  return;
             }
 
             if (currElem.id === "add") {
