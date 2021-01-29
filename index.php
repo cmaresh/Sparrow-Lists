@@ -69,8 +69,12 @@ $conn->close();
         <?php endforeach; ?>
     </div>
     </div></div></div>
+    <div plume></div>
+    <div plume-menu></div>
 </section>
 
+<script src="./scripts/plume.js"></script>
+<script>plume()</script>
 </body>
 
 </html>

@@ -80,28 +80,7 @@ $conn->close();
 <section id="lists">
     <div class="container padded">
         <?php if ($owner): ?>
-            <div class="list-options-pos">
-                <div id="list-options">
-                    <div class="list-option" id="add">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg>
-                    </div>
-                    <div class="list-option" id="cancel" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/></svg>
-                    </div>
-                    <div class="list-option" id="shiftup" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-circle" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/></svg>
-                    </div>
-                    <div class="list-option" id="shiftdown" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/></svg>
-                    </div>
-                    <div class="list-option" id="changepos" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/></svg>
-                    </div>
-                    <div class="list-option" id="remove" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
-                    </div>
-                </div>
-            </div>
+            <div plume-menu />
         <?php endif; ?>
         <div class="row no-gutters">
         <?php if (!$exists): ?>
@@ -152,7 +131,7 @@ $conn->close();
         </div>
         <div class="col-md-6 sp-flex-column">
             <div class="list-content">
-                <ol id="list-items">
+                <ol id="list-items" plume>
                 <?php foreach($lists as $l) { echo '<li class="list-name '.($owner ? 'editable' : '').'" data-id="'.$l['id'].'"><div class="list-name-content">'.$l['content'].'</div></li>'; } ?>
                 <!--<li class="list-name editable" data-id="100">List item content
                     <div class="poster-section">
@@ -274,128 +253,7 @@ $conn->close();
     //     });
     // });
 
-    let creatingItem = false;
-    let editing = false;
-    let editingElem;
-
-    document.addEventListener("DOMContentLoaded", (event) => {
-        const listOptions = document.getElementById("list-options");
-        const listItems = document.getElementById("list-items");
-
-        const addOptElem = document.getElementById("add");
-        const cancelOptElem = document.getElementById("cancel");
-        const shiftupOptElem = document.getElementById("shiftup");
-        const shiftdownOptElem = document.getElementById("shiftdown");
-        const changeposOptElem = document.getElementById("changepos");
-        const removeOptElem = document.getElementById("remove");
-
-
-        const newItemElem = document.createElement("li");
-        const newItemInputContainer = document.createElement("div");
-        const newItemTextEntry = document.createElement("input");
-        const newItemShadowText = document.createElement("div");
-        
-        function openEditingMenu() {
-            addOptElem.setAttribute("disabled", "");
-            cancelOptElem.setAttribute("disabled", "");
-            shiftupOptElem.removeAttribute("disabled");
-            shiftdownOptElem.removeAttribute("disabled");
-            changeposOptElem.removeAttribute("disabled");
-            removeOptElem.removeAttribute("disabled");
-        }
-
-        function closeEditingMenu() {
-            addOptElem.removeAttribute("disabled");
-            shiftupOptElem.setAttribute("disabled", "");
-            shiftdownOptElem.setAttribute("disabled", "");
-            changeposOptElem.setAttribute("disabled", "");
-            removeOptElem.setAttribute("disabled", "");
-        }
-
-        listItems.addEventListener("click", e => {
-            let listItem = e.target;
-            while (!listItem.classList.contains("list-name")) {
-                if (!listItem || listItem.id == "list-items") return;
-                listItem = listItem.parentNode;
-            }
-            
-            if (listItem) {
-                if (!listItem.classList.contains("editable")) return;
-                const selected = listItem.classList.contains("selected");
-                for (let i = 0; i < listItems.children.length; i++) {
-                    listItems.children[i].classList.remove("selected");
-                }
-
-                if (selected) {
-                    editing = false;
-                    closeEditingMenu();
-                    listItem.classList.remove("selected");
-                } else {
-                    if (creatingItem) {
-                        creatingItem = false;
-                        listItemsElem.removeChild(newItemElem);
-                    }
-                    if (!editing) {
-                        editing = true;
-                        openEditingMenu();
-                    }
-                    listItem.classList.add("selected");
-                    editingElem = listItem;
-                }
-            }
-        });
-
-        newItemElem.className = "list-name";
-        newItemInputContainer.className = "input-container";
-        newItemTextEntry.id = "new-item-input";
-        newItemShadowText.id = "shadow-text";
-
-        newItemTextEntry.setAttribute("type", "text");
-        newItemElem.appendChild(newItemInputContainer);
-        newItemInputContainer.appendChild(newItemTextEntry);
-        newItemInputContainer.appendChild(newItemShadowText);
-
-        const listItemsElem = document.getElementById("list-items");
-        listOptions.addEventListener("click", (event) => {
-            currElem = event.target;
-            while (!currElem.classList.contains("list-option")) {
-                if (!currElem || currElem.id == "list-options") return;
-                currElem = currElem.parentNode;
-            }
-
-            if (currElem.id === "add") {
-                creatingItem = true;
-                currElem.setAttribute("disabled", "");
-                cancelOptElem.removeAttribute("disabled");
-                listItemsElem.appendChild(newItemElem);
-                newItemTextEntry.focus();
-            }
-
-            if (currElem.id === "cancel") {
-                creatingItem = false;
-                currElem.setAttribute("disabled", "");
-                addOptElem.removeAttribute("disabled");
-                listItemsElem.removeChild(newItemElem);
-            }
-            
-            if (currElem.id === "shiftup") {
-                if (editingElem.previousSibling) listItems.insertBefore(editingElem, editingElem.previousSibling);
-            }
-
-            if (currElem.id === "shiftdown") {
-                if (editingElem.nextSibling) listItems.insertBefore(editingElem.nextSibling, editingElem);
-            }
-
-            if (currElem.id === "changepos") {
-                
-            }
-
-            if (currElem.id === "remove") {
-                
-            }
-        });
-    });
-
 </script>
+<script src="./scripts/plume.js" />
 <?php endif; ?>
 </html>
